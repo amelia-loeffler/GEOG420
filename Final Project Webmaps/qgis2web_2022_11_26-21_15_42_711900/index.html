@@ -33,9 +33,25 @@
         <script src="data/_0.js"></script>
         <script src="data/FarmersMarketCoordinates_1.js"></script>
         <script>
+        var highlightLayer;
+        function highlightFeature(e) {
+            highlightLayer = e.target;
+
+            if (e.target.feature.geometry.type === 'LineString') {
+              highlightLayer.setStyle({
+                color: '#ffff00',
+              });
+            } else {
+              highlightLayer.setStyle({
+                fillColor: '#ffff00',
+                fillOpacity: 1
+              });
+            }
+            highlightLayer.openPopup();
+        }
         var map = L.map('map', {
             zoomControl:true, maxZoom:28, minZoom:1
-        }).fitBounds([[35.840529705681845,-79.12930731686808],[36.26790368267042,-78.50781475692514]]);
+        }).fitBounds([[35.840529705681845,-79.13009005308967],[36.26790368267042,-78.50703202070342]]);
         var hash = new L.Hash(map);
         map.attributionControl.setPrefix('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>');
         var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
@@ -43,6 +59,21 @@
         function setBounds() {
         }
         function pop__0(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
             var popupContent = '<table>\
                     <tr>\
                         <td colspan="2">' + (feature.properties['STATEFP'] !== null ? autolinker.link(feature.properties['STATEFP'].toLocaleString()) : '') + '</td>\
@@ -515,7 +546,7 @@
                 interactive: false,
             }
                     break;
-                case 'NULL':
+                default:
                     return {
                 pane: 'pane__0',
                 opacity: 1,
@@ -547,6 +578,21 @@
         bounds_group.addLayer(layer__0);
         map.addLayer(layer__0);
         function pop_FarmersMarketCoordinates_1(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
             var popupContent = '<table>\
                     <tr>\
                         <td colspan="2">' + (feature.properties['Name'] !== null ? autolinker.link(feature.properties['Name'].toLocaleString()) : '') + '</td>\
@@ -577,7 +623,7 @@
                 fill: true,
                 fillOpacity: 1,
                 fillColor: 'rgba(225,89,137,1.0)',
-                interactive: false,
+                interactive: true,
             }
         }
         map.createPane('pane_FarmersMarketCoordinates_1');
@@ -585,7 +631,7 @@
         map.getPane('pane_FarmersMarketCoordinates_1').style['mix-blend-mode'] = 'normal';
         var layer_FarmersMarketCoordinates_1 = new L.geoJson(json_FarmersMarketCoordinates_1, {
             attribution: '',
-            interactive: false,
+            interactive: true,
             dataVar: 'json_FarmersMarketCoordinates_1',
             layerName: 'layer_FarmersMarketCoordinates_1',
             pane: 'pane_FarmersMarketCoordinates_1',
